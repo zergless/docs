@@ -14,4 +14,3 @@ Before a host will be backed up a few things need to be done
   - Once this has been done the host must be addded from backuppc. Click on edit host and and add the hostname with the user of backuppc.
 
 More Docs can be found [here](https://albus.redbrick.dcu.ie/backuppc/index.cgi?action=view&type=docs) at Backuppc documentation on albus
-
