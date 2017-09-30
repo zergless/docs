@@ -1,6 +1,7 @@
 # DRAC access
 
 ## Overview
+
 Our two poweredges have a DRAC, an embedded 'Dell Remote Access Controller' This allows us to:
 
 * Perform remote reboots, shutdown, power up.
@@ -23,28 +24,23 @@ The DRAC network is: 192.168.1.x - don't confuse this with our internal network,
 Note that carbon is on .2 because at some point there was a gateway on .1, or
 crap.
 
-## DRAC network diagram:
+## DRAC network diagram
 
-```
-  |                                             .2    ______________
-__|______                        -------------------=| carbon DRAC  |
-|       |  .8               _____|_                   ~~~~~~~~~~~~~~
-|sprout |=-----------------|  hub  |
-|_______|                   ~~~~~|~             .3    _______________
-                                 -------------------=| deathray DRAC |
-                                 |                    ~~~~~~~~~~~~~~~
-                                 |
-                                 |              .14   _______________
-                                 -------------------=|  murphy ALOM  |
-                                 |                    ~~~~~~~~~~~~~~~
-                                 |
-                                 |              .23   _______________
-                                 -------------------=|   cynic RSC   |
-                                 |                    ~~~~~~~~~~~~~~~
-                                 |
-                                 |              .123  _______________
-                                 -------------------=| pike (IP-KVM) |
-                                                      ~~~~~~~~~~~~~~~
+```graphviz
+  digraph DRAC {
+    nodesep=1.0
+    rankdir=LR
+    node [color=Red,fontname=Courier,shape=Mrecord]
+    edge [color=Blue, style=dashed]
+    sprout [label="{sprout|.8}"]
+    carbon [label="{carbon | DRAC | .1}"]
+    deathray [label="{deathray | DRAC | .3}"]
+    murphy [label="{murphy | ALOM | .14}"]
+    cynic [label="{cynic | RSC | .23}"]
+    pike [label="{pike | IP-KVM | .123}"]
+    sprout->hub
+    hub->{carbon deathray murphy cynic pike}
+  }
 ```
 
 To access the DRAC on either machine, you'll need to do some ssh port forwarding
@@ -52,13 +48,14 @@ via sprout.
 
 Forward local port 443 to 192.168.1.3 via fap.
 
-''ssh -L 443:192.168.1.3:443 username@b4.redbrick.dcu.ie''
+`ssh -L 443:192.168.1.3:443 username@b4.redbrick.dcu.ie`
 
-Open https://localhost:443/ in your browser and you should have the requested
+Open [https://localhost](https://localhost:443/) in your browser and you should have the requested
 machine's DRAC login page there. Eventually. They're slow fuckers. You can get
 the login details from pwsafe.
 
 ## Quirks
+
 You'll need a browser with a JRE to get anywhere. The remote console doesn't
 appear to work with ssh forwarding, I think one may need to forward port 5900
 (vnc) too, but not sure.
